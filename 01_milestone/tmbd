@@ -1,0 +1,20 @@
+# found tmdbsimple, a python wrapper for tmbd [ pip install tmdbsimple ]
+# instructions are here: https://pypi.python.org/pypi/tmdbsimple
+
+import tmdbsimple as tmdb
+tmdb.API_KEY = <your api key>
+
+# search for movie "Moonlight" 
+search = tmdb.Search()
+response = search.movie(query="Moonlight")
+for s in search.results:
+    print(s['title'], s['id'], s['release_date'], s['popularity'])
+moonlight = search.results[1]
+
+#return poster path
+print "Moonlight poster path =", moonlight['poster_path']
+
+#return genre ids
+print "Moonlight genres:"
+print "TMBD: ", moonlight['genre_ids']
+
