@@ -3,18 +3,37 @@
 
 import tmdbsimple as tmdb
 tmdb.API_KEY = <your api key>
+from imdb import IMDb
 
-# search for movie "Moonlight" 
+
+# search for our "Arrival" in TMDB
 search = tmdb.Search()
-response = search.movie(query="Moonlight")
+response = search.movie(query="Arrival")
+
+#determine the right movie ID by manual inspection
 for s in search.results:
     print(s['title'], s['id'], s['release_date'], s['popularity'])
-moonlight = search.results[0]
+
+# call record using movie ID
+movie = tmdb.Movies(329865)
+response = movie.info()
 
 #return poster path
-print "Moonlight poster path =", moonlight['poster_path']
+print "Arrival poster path:", movie.poster_path
 
-#return genre ids
-print "Moonlight genres:"
-print "TMBD: ", moonlight['genre_ids']
+#return TMDB genres [how to pull only genre names?]
+print "Arrival genre, via TMDB:", movie.genres
+
+#search for "Arrival" in IMDB
+ia = IMDb()
+response = ia.search_movie('Arrival')
+
+#determine right movie by visual inspection
+response
+
+#based on result, pull genres
+arrival_i = ia.get_movie('2543164')
+print arrival_i['genres']
+
+### --> Arrival is 'Drama' and 'Science Fiction' in TMDB, but 'Drama', 'Mystery', 'Sci-Fi' and 'Thriller' in IMDB
 
