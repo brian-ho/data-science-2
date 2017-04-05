@@ -5,3 +5,10 @@ Main challenge: multiple genre assignments
 Not only are there 20 possible genre assignments in TMDb--a large number of classes to predict--but movies are commonly assigned more than one genre. This suggests that genres are properties of movies, and not necessarily mutually exclusive categories. At the same time, we perceive that movies can generally be grouped according to likeness. One of our initial ideas, therefore, is to consider how movies cluster based on genre assignment alone. The idea of similarity/dissimilarity across movies could potentially be captured by distance among genre groupings, e.g. in principal components space. This analysis could potentially generate alternative outcome values for our predictions, addressing the multiple values problem described above while capturing something intuitively true about the movie (e.g. the difference between a typical comedy and a "romantic comedy").      
 
 Some other possible solutions would be to narrow down the genres we try to predict; to sample only movies that have been assigned one genre; to create multiple entries for movies with multiple genres, assigning one genre per entry; or to develop a method for choosing a single genre among those assigned to a given movie. The correct choice among these strategies will depend partly on choices we make later about the research questions and predictor data that interest us most.
+
+> A list of questions you could answer with this and related data. Get creative here!
+
+Some that we've discussed:
+Can movie posters predict the year of a movie's release? What attributes of a poster are most associated with year of release?
+How do prediction algorithms trained on English-language movies perform on movies in other languages?
+What could an algorithm, trained to predict popularity based on movie posters, teach us if we inputted fake or modified posters? What sorts of posters would it generate, synthesizing what it has learned about popular/unpopular movies? 
