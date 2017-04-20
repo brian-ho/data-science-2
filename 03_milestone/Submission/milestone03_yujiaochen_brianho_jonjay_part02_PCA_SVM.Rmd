@@ -1,0 +1,83 @@
+---
+title: "PCA and SVM on Movie Title and Overview"
+output: pdf_document
+date: "April 19, 2017"
+---
+
+## Here we accomplished several tasks: 1) From the word appearance dataframe of 119 Horror movies, 122 Romance movies and 129 Scifi movies prepared by python codes, we randomly chose 50 movies to be the test set, and the rest of them to be the training set; 2) Using PCA to extract first 100 PCs that explain 90% of the variance in data, and projecting the training data and testing data to get PC score in each sets; 3) Employing SVM with radial basis function to classify the horror, romance and scifi movies based on their PC scores. The parameter (gamma and cost) has been found through tuning; 4) The final predicting accuracy on test set using this model is around 80%, which is a satisfactory result. 
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Read in word appearance data of movies (data was generated using Python); Create training set and testing set
+
+```{r}
+feature <- read.csv("feature.csv")
+feature <- feature[,-1]
+genre <- read.csv("genre.csv", header = FALSE)
+genre <- genre[,-1]
+
+set.seed(1)
+index <- sample(1:nrow(feature),50)
+
+test.genre <- genre[index]
+test.feature <- feature[index,]
+
+train.genre <- genre[-index]
+train.feature <- feature[-index,]
+
+```
+
+## Principal Component Analysis using First 100 PCs
+
+```{r}
+PCA.train <- prcomp(train.feature)
+
+PCA.vectors <- PCA.train$rotation[,1:100]
+
+PCA.score.train <- PCA.train$x[,1:100]
+
+test.scaled <- 
+    scale(test.feature, center=PCA.train$center, scale=PCA.train$scale)
+
+PCA.score.test <-
+    test.scaled %*% PCA.train$rotation[,1:100]
+
+```
+
+
+```{r}
+library(e1071)
+```
+
+## Use Support Vector Machine (Radial Basis Function) to classify Horror movies, Romance movies and Scifi movies using PCs
+
+```{r}
+train.df <- data.frame(train.genre,PCA.score.train)
+colnames(train.df)[1]<- c("Labels")
+
+test.df <- data.frame(test.genre,PCA.score.test)
+colnames(test.df)[1]<- c("Labels")
+
+tuned.params <- 
+    tune(svm, Labels~., kernel="radial", data=train.df, ranges=
+             list(gamma=10^(-6:-3),cost=10^(1:4)))
+
+gamma <- tuned.params$best.parameters$gamma
+cost <- tuned.params$best.parameters$cost
+
+model <- svm(Labels~., kernel="radial", data=train.df, gamma=gamma, cost=cost)
+
+preds <- predict(model, newdata=test.df)
+
+table(test.df$Labels,preds)
+```
+
+## Accuracy on test set
+```{r}
+mean(test.df$Labels==preds)
+```
+
+
+
